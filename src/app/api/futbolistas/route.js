@@ -1,26 +1,25 @@
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server';
+import pool from '@/database/database';
 
 let futbolistas = [];
 
 export async function GET(req) {
-  const { searchParams } = new URL(req.url);
-  const equipo = searchParams.get("equipo");
+  const futbolistas = await pool.query('select * from Jugadores');
 
-  const filtroJugadores = equipo
-    ? futbolistas.filter((jugador) => jugador.equipo === equipo)
-    : futbolistas;
+  //const { searchParams } = new URL(req.url);
+  //const equipo = searchParams.get('equipo');
 
-  return NextResponse.json(filtroJugadores);
+  //const filtroJugadores = equipo ? futbolistas.filter((jugador) => jugador.equipo === equipo) : futbolistas;
+
+  //return NextResponse.json(filtroJugadores);
+  return NextResponse.json(futbolistas[0]);
 }
 
 export async function POST(req) {
   const nuevoJugador = await req.json();
 
   if (!nuevoJugador.name || !nuevoJugador.equipo) {
-    return NextResponse.json(
-      { error: "El nombre y el equipo son obligatorios" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: 'El nombre y el equipo son obligatorios' }, { status: 400 });
   }
 
   futbolistas.push(nuevoJugador);
